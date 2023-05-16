@@ -39,9 +39,13 @@ Before running the script, you need to configure the following settings:
 
 
 2. Update the following variables with your Jira Software instance details and credentials:
-
+        
+         BASE_URL: The base url of your Jira instance
+         
          YOUR_PROJECT_KEY: The key of the source project you want to clone
-
+         
+         NEW_PROJECT_NAME: The name of your new project
+         
          NEW_PROJECT_KEY: Set the key of the new project
 
          YOUR_USER/EMAIL: Your Atlassian account user
@@ -66,6 +70,8 @@ Before running the script, you need to configure the following settings:
 This script is intended for **administrative** use and requires appropriate permissions to clone projects and modify schemes.
 
 Ensure that you have valid backup mechanisms in place before executing this script, as it performs irreversible changes to your Jira Software instance.
+
+! Permission schemes are not available in free plans, if you have a free plan, you will need to edit this variable inside the clone_projects.py, one easy is way to do this is just adding a # in front of the variable in line 105, then run the code normally.
 
 
 ## License
