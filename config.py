@@ -6,10 +6,10 @@ from requests.auth import HTTPBasicAuth
 base_url = "https://{YOUR_INSTANCE}atlassian.net"
 
 # Pass the key of the source project you want to clone
-source_project_key = 'FGL'
+source_project_key = 'YOUR_PROJECT_KEY'
 
 # Set the name and key of the new project
-new_project_name = "YOUR_NEW_PROJECT"
+new_project_name = "NEW_PROJECT_NAME"
 new_project_key = 'NEW_PROJECT_KEY'
 
 # Set the authentication credentials using HTTP Basic Authentication
