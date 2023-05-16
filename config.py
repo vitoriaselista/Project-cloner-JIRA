@@ -1,3 +1,5 @@
+# This script is created by Ana Vitória Selista for Jira administrative use
+
 from requests.auth import HTTPBasicAuth
 
 # Pass the key of the source project you want to clone
