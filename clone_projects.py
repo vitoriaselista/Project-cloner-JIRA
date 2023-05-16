@@ -2,7 +2,8 @@
 
 import requests
 import json
-from config import source_project_key, new_project_key, auth
+from config import source_project_key, new_project_key, credentials, base_url, new_project_name
+
 
 def get(url, header=None, params=None):
 
@@ -18,7 +19,7 @@ def get(url, header=None, params=None):
     return requests.get(
         url,
         headers=header,
-        auth=auth,
+        auth=credentials,
         params=params
     )
 
@@ -33,17 +34,48 @@ def post(url, data, header=None, params=None):
     return requests.post(
         url,
         headers=header,
-        data=json.dumps(data), # Convert data to JSON format
-        auth=auth,
+        data=json.dumps(data),  # Convert data to JSON format
+        auth=credentials,
         params=params
     )
 
-def create_new_project():
 
+def get_workflow_scheme_id(source_project_data):
+    workflow_scheme_association_url = base_url + '/rest/api/2/workflowscheme/project'
+
+    # Send a GET request to retrieve the workflow scheme association for the source project
+    workflow_scheme_association = get(workflow_scheme_association_url,
+                                      params={'projectId': source_project_data['id']}).json()
+
+    # Extract the workflow scheme ID associated with the source project
+    return [int(wfscheme['workflowScheme']['id']) for wfscheme in workflow_scheme_association['values'] if
+            str(source_project_data['id']) in wfscheme['projectIds']][0]  # Take the first workflow scheme ID
+
+
+def get_notification_scheme_id(source_project_data):
+    url = base_url + "/rest/api/2/notificationscheme/project"
+    results = get(url, params={'maxResults': 100, 'projectId': source_project_data['id']})
+    return int(results.json()['values'][0]['notificationSchemeId']) if len(results.json()['values']) == 1 else False
+
+
+def get_issuetype_scheme_id(source_project_data):
+    url = base_url + f'/rest/api/2/issuetypescheme/project?projectId={source_project_data["id"]}'
+    return int(get(url).json()['values'][0]['issueTypeScheme']['id'])
+
+
+def get_issuetype_screen_scheme_id(source_project_data):
+    url = base_url + f'/rest/api/2/issuetypescreenscheme/project?projectId={source_project_data["id"]}'
+    return int(get(url).json()['values'][0]['issueTypeScreenScheme']['id'])
+
+
+def get_permission_scheme_id(source_project_data):
+    url = base_url + f'/rest/api/3/project/{source_project_data["id"]}/permissionscheme'
+    return int(get(url).json()['id'])
+
+
+
+def clone_project():
     print(f'Cloning Jira Project: {source_project_key}')
-
-    # Base URL of the Jira instance
-    base_url = 'https://{YOUR_INSTANCE}.atlassian.net'
 
     # Construct the URL for retrieving information about the source project
     project_url = f'{base_url}/rest/api/2/project/{source_project_key}'
@@ -51,95 +83,28 @@ def create_new_project():
     # Send a GET request to retrieve information about the source project
     source_project = get(project_url, params={
         'expand': 'description,lead,issueTypes,url,projectKeys,permissions,insight'
-    }).json() # Include the desired query parameters to expand specific fields
+    }).json()  # Include the desired query parameters to expand specific fields
 
-    #------------------------------------------------------------------------------
-
-    workflow_scheme_association_url = base_url + '/rest/api/2/workflowscheme/project'
-
-    # Send a GET request to retrieve the workflow scheme association for the source project
-    workflow_scheme_association = get(workflow_scheme_association_url,
-                                      params={'projectId': source_project['id']}).json()
-
-    # Extract the workflow scheme ID associated with the source project
-    workflow_scheme_id = [wfscheme['workflowScheme']['id'] for wfscheme in workflow_scheme_association['values'] if
-                          str(source_project['id']) in wfscheme['projectIds']][0] # Take the first workflow scheme ID
-
-    #---------------------------------------------------------------------------------
-
-    issuesecuritylevel_scheme_url = base_url + '/rest/api/2/issuesecuritylevel/project'
-
-    # Get issue security level association
-    response = requests.get(issuesecuritylevel_scheme_url, params={'projectId': source_project['id']})
-    issuesecuritylevel_scheme_association = response.json() if response.status_code == 200 else {}
-
-    # Get issue security level scheme ID
-    values = issuesecuritylevel_scheme_association.get('values', [])
-    issuesecuritylevel_scheme_id = next((islscheme['issuesecuritylevelscheme']['id'] for islscheme in values if
-                                         str(source_project['id']) in islscheme['projectIds']), None)
-
-    #--------------------------------------------------------------------------
-
-    permissions_scheme_url = base_url + '/rest/api/2/permissionscheme/project'
-
-    # Get permissions scheme association
-    response = requests.get(permissions_scheme_url, params={'projectId': source_project['id']})
-    permissions_scheme_association = response.json() if response.status_code == 200 else {}
-
-    # Get permissions scheme ID
-    values = permissions_scheme_association.get('values', [])
-    permissions_scheme_id = next((pmscheme['permissionscheme']['id'] for pmscheme in values if
-                                         str(source_project['id']) in pmscheme['projectIds']), None)
-
-    #--------------------------------------------------------------------------
-
-    fieldconfiguration_scheme_url = base_url + '/rest/api/2/fieldconfigurationscheme/project'
-
-    # Get permissions scheme association
-    response = requests.get(fieldconfiguration_scheme_url, params={'projectId': source_project['id']})
-    fieldconfiguration_scheme_association = response.json() if response.status_code == 200 else {}
-
-    # Get permissions scheme ID
-    values = fieldconfiguration_scheme_association.get('values', [])
-    fieldconfiguration_scheme_id = next((fcscheme['fieldconfigurationscheme']['id'] for fcscheme in values if
-                                         str(source_project['id']) in fcscheme['projectIds']), None)
-
-    #-----------------------------------------------------------------------
-
-    securitylevel_scheme_url = base_url + '/rest/api/2/securitylevel/project'
-
-    # Get security level association
-    response = requests.get(securitylevel_scheme_url, params={'projectId': source_project['id']})
-    securitylevel_scheme_association = response.json() if response.status_code == 200 else {}
-
-    # Get security level scheme ID
-    values = securitylevel_scheme_association.get('values', [])
-    securitylevel_scheme_id = next((slscheme['securitylevel']['id'] for slscheme in values if
-                                  str(source_project['id']) in slscheme['projectIds']), None)
+    # ---------------------------------------------------------------------------------
+    # Using functions defined above.
+    # ---------------------------------------------------------------------------------
 
     # Create the initial payload dictionary with common fields
     payload = {
         "key": new_project_key,
-        "name": 'Clone of ' + source_project['name'],
+        "name": 'Clone of ' + source_project['name'] if new_project_name == '' else new_project_name,
         "projectTypeKey": source_project['projectTypeKey'],
         "leadAccountId": source_project['lead']['accountId'],
+        "description": f"This project is a clone of {source_project['name']}\n\n{source_project['description']}",
 
         # Add the workflow scheme to the payload
-        "workflowScheme": workflow_scheme_id,
+        "workflowScheme": get_workflow_scheme_id(source_project),
+        'issueTypeScheme': get_issuetype_scheme_id(source_project),
+        'issueTypeScreenScheme': get_issuetype_screen_scheme_id(source_project),
 
+        'permissionScheme': get_permission_scheme_id(source_project), # ! Permission schemes are not available in free plans
+        'notificationScheme': get_notification_scheme_id(source_project),
     }
-    # Conditionally add schemes if the ID is not None
-    if issuesecuritylevel_scheme_id is not None:
-        payload["issuesecuritylevelscheme"] = issuesecuritylevel_scheme_id
-
-    if permissions_scheme_id is not None:
-        payload["permissionScheme"] = permissions_scheme_id
-
-    if securitylevel_scheme_id is not None:
-        payload["securitylevel"] = securitylevel_scheme_id
-
-    if fieldconfiguration_scheme_id is not None:
-        payload["fieldConfigurationScheme"] = fieldconfiguration_scheme_id
 
     # Send a POST request to create a new project with the provided payload
     response = post(
@@ -152,4 +117,4 @@ def create_new_project():
 
     print(f"You're new project is available! Access your Jira instance and search in projects for {new_project_key}")
 
-create_new_project()
+clone_project()
