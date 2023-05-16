@@ -1,3 +1,5 @@
+# This script is created by Ana Vitória Selista for Jira administrative use
+
 import requests
 import json
 from config import source_project_key, new_project_key, auth
