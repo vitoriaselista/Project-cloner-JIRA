@@ -2,9 +2,7 @@
 
 The Jira Project Cloner is a Python script designed to facilitate the cloning of projects, along with their associated schemes, using the Jira Software API's.
 
-<span style="color:gray ;font-weight:700;font-size:20px">
-    Features
-</span>
+## Features
 
 ### Clone entire projects: 
 The script allows you to clone projects from one Jira Software instance to another, preserving all project configurations, issue types, workflows, and other associated settings.
@@ -15,28 +13,25 @@ In addition to project cloning, the script also ensures that associated schemes,
 ### Automated process: 
 With a simple configuration and execution process, the script automates the otherwise manual and time-consuming task of cloning projects and their schemes.
 
-<span style="color:gray ;font-weight:700;font-size:20px">
-    Prerequisites
-</span>
+
+## Prerequisites
 
 
     Python 3.x installed on your system
     Access to a Jira Software instance with administrative privileges
     Jira Software API credentials (API token & username/password)
 
-<span style="color:gray ;font-weight:700;font-size:20px">
-    Installation
-</span>
-
+## Installation
+    
     Clone the repository or download the script directly to your local machine.
 
     Install the required Python packages by running the following command:
 
     pip install -r requirements.txt
 
-<span style="color:gray ;font-weight:700;font-size:20px">
-    Configuration
-</span>
+
+## Configuration
+
 
 Before running the script, you need to configure the following settings:
 
@@ -53,9 +48,7 @@ Before running the script, you need to configure the following settings:
 
          API_TOKEN: Your Jira Software API token or password
 
-<span style="color:gray ;font-weight:700;font-size:20px">
-    Usage
-</span>
+## Usage
 
     Open a terminal or command prompt and navigate to the directory containing the script.
 
@@ -66,18 +59,17 @@ Before running the script, you need to configure the following settings:
     The script will initiate the cloning process and provide progress updates in the terminal.
 
     Once the script completes, the cloned project, including its associated schemes, will be available in your Jira Software instance.
+    
 
-<span style="color:gray ;font-weight:700;font-size:20px">
-    Notes
-</span>
+## Notes
 
 This script is intended for **administrative** use and requires appropriate permissions to clone projects and modify schemes.
 
 Ensure that you have valid backup mechanisms in place before executing this script, as it performs irreversible changes to your Jira Software instance.
 
-<span style="color:gray ;font-weight:700;font-size:20px">
-    License
-</span>
+
+## License
+
 
 This script is created by [Ana Vitória Selista](https://github.com/vitoriaselista) and is licensed under the [MIT License](LICENSE).
 
