@@ -1,6 +1,6 @@
 # **Jira Project Cloner**
 
-The Jira Project Cloner is a Python script designed to facilitate the cloning of projects, along with their associated schemes, using the Jira Software API's.
+The Jira Project Cloner is a Python script designed to facilitate the cloning of projects, along with their associated schemes, using the Jira REST API.
 
 ## Features
 
@@ -20,15 +20,7 @@ With a simple configuration and execution process, the script automates the othe
     Python 3.x installed on your system
     Access to a Jira Software instance with administrative privileges
     Jira Software API credentials (API token & username/password)
-
-## Installation
     
-    Clone the repository or download the script directly to your local machine.
-
-    Install the required Python packages by running the following command:
-
-    pip install -r requirements.txt
-
 
 ## Configuration
 
