@@ -77,6 +77,6 @@ Ensure that you have valid backup mechanisms in place before executing this scri
 ## License
 
 
-This script is created by [Ana Vitória Selista](https://github.com/vitoriaselista) and is licensed under the [MIT License](LICENSE).
+This script is created by [Ana Vitória Selista](https://github.com/vitoriaselista).
 
 *Please exercise caution while using this script and always double-check your configuration settings before executing it. If you encounter any issues or need further assistance, feel free to reach out to the script's author or refer to the Jira Software API documentation for more information.*
